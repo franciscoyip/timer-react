@@ -1,0 +1,14 @@
+/* partial scss for navigation component style */
+#app {
+  .top-bar {
+    background-color: $nav-background;
+
+    ul {
+      background-color: $nav-background;
+    }
+
+    .menu-text {
+      color: $nav-text;
+    }
+  }
+}

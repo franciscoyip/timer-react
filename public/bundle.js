@@ -27598,12 +27598,38 @@
 	  displayName: 'Countdown',
 
 	  getInitialState: function getInitialState() {
-	    return { count: 0 };
+	    return {
+	      count: 0,
+	      countdownStatus: 'stopped' //pause started
+	    };
+	  },
+	  //listen state got change, will call by react
+	  componentDidUpdate: function componentDidUpdate(prevProps, prevState) {
+	    if (this.state.countdownStatus !== prevState.countdownStatus) {
+	      var status = this.state.countdownStatus;
+	      switch (status) {
+	        case 'started':
+	          this.startTimer();
+	          break;
+	        default:
+	          break;
+	      }
+	    }
 	  },
 	  handleSetCountdown: function handleSetCountdown(seconds) {
 	    this.setState({
-	      count: seconds
+	      count: seconds,
+	      countdownStatus: 'started'
 	    });
+	  },
+	  startTimer: function startTimer() {
+	    var self = this;
+	    this.timer = setInterval(function () {
+	      var newCount = self.state.count - 1;
+	      self.setState({
+	        count: newCount >= 0 ? newCount : 0
+	      });
+	    }, 1000);
 	  },
 	  render: function render() {
 	    var count = this.state.count;
@@ -27684,6 +27710,8 @@
 	    if (strSeconds.match(/^[0-9]*$/)) {
 	      this.refs.seconds.value = '';
 	      this.props.onSetCountdown(parseInt(strSeconds));
+	    } else {
+	      console.log('Invalid');
 	    }
 	  },
 	  render: function render() {

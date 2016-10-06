@@ -20,12 +20,24 @@ describe('CountdownForm', function(){
     var countdownForm = TestUtils.renderIntoDocument(<CountdownForm onSetCountdown={spy}/>);
 
     var el = ReactDOM.findDOMNode(countdownForm);
-    console.log(el);
+
     countdownForm.refs.seconds.value = '110';
 
     TestUtils.Simulate.submit(el);
 
     expect(spy).toHaveBeenCalledWith(110);
+  });
+
+  it('should not call onSetCountdown if invalid seconds entered', function(){
+    var spy = expect.createSpy();
+    var countdownForm = TestUtils.renderIntoDocument(<CountdownForm onSetCountdown={spy}/>);
+    var el = ReactDOM.findDOMNode(countdownForm);
+
+    countdownForm.refs.seconds.value = 'BBB';
+
+    TestUtils.Simulate.submit(el);
+
+    expect(spy).toNotHaveBeenCalled();
   });
 
 });

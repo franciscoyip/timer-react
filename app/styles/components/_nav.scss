@@ -10,5 +10,11 @@
     .menu-text {
       color: $nav-text;
     }
+
+    .menu {
+      .active-link {
+        font-weight: $nav-link-active;
+      }
+    }
   }
 }

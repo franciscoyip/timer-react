@@ -27623,6 +27623,12 @@
 	      }
 	    }
 	  },
+	  //get called before removed from the document
+	  componentWillUnmount: function componentWillUnmount() {
+	    //Clean up the timer
+	    clearInterval(this.timer);
+	    this.timer = null;
+	  },
 	  handleSetCountdown: function handleSetCountdown(seconds) {
 	    this.setState({
 	      count: seconds,
@@ -27641,6 +27647,9 @@
 	      self.setState({
 	        count: newCount >= 0 ? newCount : 0
 	      });
+	      if (newCount === 0) {
+	        self.setState({ countdownStatus: 'stopped' });
+	      }
 	    }, 1000);
 	  },
 	  render: function render() {
@@ -27660,6 +27669,11 @@
 	    return React.createElement(
 	      'div',
 	      null,
+	      React.createElement(
+	        'h1',
+	        { className: 'page-title' },
+	        'Countdown'
+	      ),
 	      React.createElement(Clock, { totalSeconds: count }),
 	      renderControlArea()
 	    );
@@ -28202,7 +28216,7 @@
 
 
 	// module
-	exports.push([module.id, "/* partial scss for navigation component style */\n#app .top-bar {\n  background-color: #333333; }\n  #app .top-bar ul {\n    background-color: #333333; }\n  #app .top-bar .menu-text {\n    color: #ffffff; }\n  #app .top-bar .menu .active-link {\n    font-weight: bold; }\n\n.clock {\n  align-items: center;\n  background-color: #B5D0E2;\n  border: 2px solid #2099E8;\n  border-radius: 50%;\n  display: flex;\n  height: 14rem;\n  justify-content: center;\n  margin: 4rem auto;\n  width: 14rem; }\n\n.clock-text {\n  color: white;\n  font-size: 2.25rem;\n  font-weight: 300; }\n\n.controls {\n  display: flex;\n  justify-content: center; }\n  .controls .button {\n    padding: 0.75rem, 2.5rem; }\n  .controls .button:first-child {\n    margin-right: 1.5rem; }\n", ""]);
+	exports.push([module.id, "/* partial scss for navigation component style */\n#app .top-bar {\n  background-color: #333333; }\n  #app .top-bar ul {\n    background-color: #333333; }\n  #app .top-bar .menu-text {\n    color: #ffffff; }\n  #app .top-bar .menu .active-link {\n    font-weight: bold; }\n\n.clock {\n  align-items: center;\n  background-color: #B5D0E2;\n  border: 2px solid #2099E8;\n  border-radius: 50%;\n  display: flex;\n  height: 14rem;\n  justify-content: center;\n  margin: 4rem auto;\n  width: 14rem; }\n\n.clock-text {\n  color: white;\n  font-size: 2.25rem;\n  font-weight: 300; }\n\n.controls {\n  display: flex;\n  justify-content: center; }\n  .controls .button {\n    padding: 0.75rem, 2.5rem; }\n  .controls .button:first-child {\n    margin-right: 1.5rem; }\n\n.page-title {\n  text-align: center;\n  margin: 2rem auto; }\n", ""]);
 
 	// exports
 

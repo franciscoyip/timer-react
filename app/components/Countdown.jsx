@@ -3,6 +3,7 @@ var React = require('react');
 //components
 var Clock = require('Clock');
 var CountdownForm = require('CountdownForm');
+var Controls = require('Controls');
 
 var Countdown = React.createClass({
   getInitialState: function(){
@@ -19,6 +20,12 @@ var Countdown = React.createClass({
         case 'started':
           this.startTimer();
           break;
+        case 'stopped':
+          this.setState({count: 0});
+          //let this case also run statements at pause
+        case 'paused':
+          clearInterval(this.timer);
+          this.timer = null;
         default:
           break;
       }
@@ -28,6 +35,11 @@ var Countdown = React.createClass({
     this.setState({
       count: seconds,
       countdownStatus: 'started'
+    });
+  },
+  handleStatusChange: function(newStatus){
+    this.setState({
+      countdownStatus: newStatus
     });
   },
   startTimer: function(){
@@ -41,11 +53,20 @@ var Countdown = React.createClass({
     }, 1000);
   },
   render: function(){
-    var {count} = this.state;
+    var {count, countdownStatus} = this.state;
+    var self = this;
+    var renderControlArea = function(){
+      if(countdownStatus !== 'stopped'){
+        return (<Controls countdownStatus={countdownStatus} onStatusChange={self.handleStatusChange}/>);
+      }else{
+        return (<CountdownForm onSetCountdown={self.handleSetCountdown}/>);
+      }
+    };
+
     return (
       <div>
         <Clock totalSeconds={count}/>
-        <CountdownForm onSetCountdown={this.handleSetCountdown}/>
+        {renderControlArea()}
       </div>
     );
   },

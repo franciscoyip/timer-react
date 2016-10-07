@@ -113,8 +113,8 @@
 	var Timer = __webpack_require__(244);
 	var Countdown = __webpack_require__(245);
 
-	__webpack_require__(248);
-	__webpack_require__(252);
+	__webpack_require__(249);
+	__webpack_require__(253);
 
 	$(document).foundation();
 
@@ -27593,6 +27593,7 @@
 	//components
 	var Clock = __webpack_require__(246);
 	var CountdownForm = __webpack_require__(247);
+	var Controls = __webpack_require__(248);
 
 	var Countdown = React.createClass({
 	  displayName: 'Countdown',
@@ -27611,6 +27612,12 @@
 	        case 'started':
 	          this.startTimer();
 	          break;
+	        case 'stopped':
+	          this.setState({ count: 0 });
+	        //let this case also run statements at pause
+	        case 'paused':
+	          clearInterval(this.timer);
+	          this.timer = null;
 	        default:
 	          break;
 	      }
@@ -27620,6 +27627,11 @@
 	    this.setState({
 	      count: seconds,
 	      countdownStatus: 'started'
+	    });
+	  },
+	  handleStatusChange: function handleStatusChange(newStatus) {
+	    this.setState({
+	      countdownStatus: newStatus
 	    });
 	  },
 	  startTimer: function startTimer() {
@@ -27632,13 +27644,24 @@
 	    }, 1000);
 	  },
 	  render: function render() {
-	    var count = this.state.count;
+	    var _state = this.state;
+	    var count = _state.count;
+	    var countdownStatus = _state.countdownStatus;
+
+	    var self = this;
+	    var renderControlArea = function renderControlArea() {
+	      if (countdownStatus !== 'stopped') {
+	        return React.createElement(Controls, { countdownStatus: countdownStatus, onStatusChange: self.handleStatusChange });
+	      } else {
+	        return React.createElement(CountdownForm, { onSetCountdown: self.handleSetCountdown });
+	      }
+	    };
 
 	    return React.createElement(
 	      'div',
 	      null,
 	      React.createElement(Clock, { totalSeconds: count }),
-	      React.createElement(CountdownForm, { onSetCountdown: this.handleSetCountdown })
+	      renderControlArea()
 	    );
 	  }
 	});
@@ -27707,7 +27730,7 @@
 	    var strSeconds = this.refs.seconds.value;
 	    //^ check from start
 	    //$ check till the end
-	    if (strSeconds.match(/^[0-9]*$/)) {
+	    if (strSeconds && strSeconds.match(/^[0-9]*$/)) {
 	      this.refs.seconds.value = '';
 	      this.props.onSetCountdown(parseInt(strSeconds));
 	    } else {
@@ -27734,13 +27757,80 @@
 /* 248 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
+	var React = __webpack_require__(8);
+
+	var Controls = React.createClass({
+	  displayName: 'Controls',
+
+	  propTypes: {
+	    countdownStatus: React.PropTypes.string.isRequired,
+	    onStatusChange: React.PropTypes.func.isRequired
+	  },
+	  onStatusChange: function onStatusChange(newStatus) {
+	    return function () {
+	      this.props.onStatusChange(newStatus);
+	    }.bind(this);
+	  },
+	  render: function render() {
+	    var countdownStatus = this.props.countdownStatus;
+
+
+	    var renderControlButton = function () {
+	      switch (countdownStatus) {
+	        case 'started':
+	          return React.createElement(
+	            'button',
+	            { className: 'button secondary', onClick: this.onStatusChange('paused') },
+	            'Pause'
+	          );
+	          break;
+	        case 'paused':
+	          return React.createElement(
+	            'button',
+	            { className: 'button primary', onClick: this.onStatusChange('started') },
+	            'Start'
+	          );
+	          break;
+	        default:
+	          break;
+	      }
+	      /*
+	      if(countdownStatus === 'started'){
+	        //pause button
+	      }else if(countdownStatus === 'paused'){
+	        //start
+	      }
+	      */
+	    }.bind(this);
+
+	    return React.createElement(
+	      'div',
+	      { className: 'controls' },
+	      renderControlButton(),
+	      React.createElement(
+	        'button',
+	        { className: 'button alert hollow', onClick: this.onStatusChange('stopped') },
+	        'Clear'
+	      )
+	    );
+	  }
+	});
+
+	module.exports = Controls;
+
+/***/ },
+/* 249 */
+/***/ function(module, exports, __webpack_require__) {
+
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(249);
+	var content = __webpack_require__(250);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(251)(content, {});
+	var update = __webpack_require__(252)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -27757,10 +27847,10 @@
 	}
 
 /***/ },
-/* 249 */
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(250)();
+	exports = module.exports = __webpack_require__(251)();
 	// imports
 
 
@@ -27771,7 +27861,7 @@
 
 
 /***/ },
-/* 250 */
+/* 251 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -27826,7 +27916,7 @@
 	};
 
 /***/ },
-/* 251 */
+/* 252 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -28078,16 +28168,16 @@
 
 
 /***/ },
-/* 252 */
+/* 253 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(253);
+	var content = __webpack_require__(254);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(251)(content, {});
+	var update = __webpack_require__(252)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -28104,15 +28194,15 @@
 	}
 
 /***/ },
-/* 253 */
+/* 254 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(250)();
+	exports = module.exports = __webpack_require__(251)();
 	// imports
 
 
 	// module
-	exports.push([module.id, "/* partial scss for navigation component style */\n#app .top-bar {\n  background-color: #333333; }\n  #app .top-bar ul {\n    background-color: #333333; }\n  #app .top-bar .menu-text {\n    color: #ffffff; }\n  #app .top-bar .menu .active-link {\n    font-weight: bold; }\n\n.clock {\n  align-items: center;\n  background-color: #B5D0E2;\n  border: 2px solid #2099E8;\n  border-radius: 50%;\n  display: flex;\n  height: 14rem;\n  justify-content: center;\n  margin: 4rem auto;\n  width: 14rem; }\n\n.clock-text {\n  color: white;\n  font-size: 2.25rem;\n  font-weight: 300; }\n", ""]);
+	exports.push([module.id, "/* partial scss for navigation component style */\n#app .top-bar {\n  background-color: #333333; }\n  #app .top-bar ul {\n    background-color: #333333; }\n  #app .top-bar .menu-text {\n    color: #ffffff; }\n  #app .top-bar .menu .active-link {\n    font-weight: bold; }\n\n.clock {\n  align-items: center;\n  background-color: #B5D0E2;\n  border: 2px solid #2099E8;\n  border-radius: 50%;\n  display: flex;\n  height: 14rem;\n  justify-content: center;\n  margin: 4rem auto;\n  width: 14rem; }\n\n.clock-text {\n  color: white;\n  font-size: 2.25rem;\n  font-weight: 300; }\n\n.controls {\n  display: flex;\n  justify-content: center; }\n  .controls .button {\n    padding: 0.75rem, 2.5rem; }\n  .controls .button:first-child {\n    margin-right: 1.5rem; }\n", ""]);
 
 	// exports
 

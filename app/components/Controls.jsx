@@ -25,6 +25,11 @@ var Controls = React.createClass({
             <button className="button primary" onClick={this.onStatusChange('started')}>Start</button>
           );
           break;
+        case 'stopped':
+            return (
+              <button className="button primary" onClick={this.onStatusChange('started')}>Start</button>
+            );
+            break;
         default:
           break;
       }

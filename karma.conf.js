@@ -6,7 +6,11 @@ module.exports = function(config){
     singleRun: true,
     frameworks: ['mocha'],
     //with file pattern
-    files: ['app/tests/**/*.test.jsx'],
+    files: [
+      'node_modules/jquery/jquery.min.js',
+      'node_modules/foundation-sites/dist/foundation.min.js',
+      'app/tests/**/*.test.jsx'
+    ],
     preprocessors: {
       'app/tests/**/*.test.jsx':['webpack', 'sourcemap']
     },
